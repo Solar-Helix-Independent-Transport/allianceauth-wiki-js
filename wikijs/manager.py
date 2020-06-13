@@ -107,14 +107,14 @@ class WikiJSManager:
             groups.append(WikiJSManager._sanitize_groupname(str(g)))
         
         group_list = self.__generate_group_list(groups)
-        data = json.loads(self.client.execute(_find_user_query), 
+        data = json.loads(self.client.execute(_create_user_mutation, 
                             variables={
-                                "groups_list":group_list,
+                                "group_list":group_list,
                                 "email":user.email,
                                 "name":name,
-                                "pass":password})
+                                "pass":password}))
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
-            uid = self.__find_user(user.conjugateemail)
+            uid = self.__find_user(user.email)
             if uid:
                 WikiJsUser.objects.create(user=user, uid=uid)
                 return True
@@ -198,22 +198,26 @@ class WikiJSManager:
 
     def activate_user(self, user):
         #search
-        uid = self.__find_user(user.email)
-        
-        #create
-        if not uid:
-            uid = self.__create_user(user)
-        else:
-            self.__activate_user(uid)
-            WikiJsUser.objects.create(user=user, uid=uid)
-            self.update_user(user)
+        try:
+            uid = self.__find_user(user.email)
+            
+            #create
+            if not uid:
+                uid = self.__create_user(user)
+            else:
+                self.__activate_user(uid)
+                WikiJsUser.objects.create(user=user, uid=uid)
+                self.update_user(user)
 
-        #password
-        password = get_random_string(15)
-        self._update_password(uid, password)
+            #password
+            password = get_random_string(15)
+            self._update_password(uid, password)
 
-        #return
-        return password
+            #return
+            return password
+        except Exception as e:
+            logging.error(e)
+            return False
 
     def deactivate_user(self, user):
         result = self.__deactivate_user(user.wikijs.uid)

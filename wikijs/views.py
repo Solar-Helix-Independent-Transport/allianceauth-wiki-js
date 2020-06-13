@@ -87,5 +87,5 @@ def reset_password(request):
         return redirect("services:services")
 
     return render(request, 'services/service_credentials.html',
-                context={'credentials': credentials, 'service': 'Wiki.JS'})
+                context={'credentials': {"password":password}, 'service': 'Wiki.JS'})
 
