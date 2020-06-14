@@ -48,7 +48,7 @@ class WikiJSManager:
 
     def _get_groups(self):
         data = json.loads(self.client.execute(_get_group_list_query)).get("data",{}).get("groups",{}).get("list",[])
-        return [g for g in data if not g['isSystem']]
+        return data
 
     def _create_group(self, name):
         data = json.loads(self.client.execute(_create_group_mutation, variables={"group_name":name}))

@@ -40,6 +40,7 @@ def activate_wikijs(request):
     else:
         logger.error("Failed to deactivate Wiki.JS for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
+        return redirect("services:services")
 
     return render(request, 'services/service_credentials.html',
                 context={'credentials': {"password":credentials}, 'service': 'Wiki.JS'})
@@ -56,14 +57,21 @@ def set_password(request):
         if form.is_valid() and WikiJSManager.user_has_account(request.user) and character is not None:
             password = form.cleaned_data['password']
             logger.debug("Form contains password of length %s" % len(password))
-            result = WikiJSManager()._update_password(request.user.wikijs.uid, password)
-            if result:
-                logger.info("Successfully set Wiki.JS password for user %s" % request.user)
-                messages.success(request, _('Set Wiki.JS password.'))
-            else:
+            try:
+                result = WikiJSManager()._update_password(request.user.wikijs.uid, password)
+                if result:
+                    logger.info("Successfully set Wiki.JS password for user %s" % request.user)
+                    messages.success(request, _('Set Wiki.JS password.'))
+                else:
+                    logger.error("Failed to install custom Wiki.JS password for user %s" % request.user)
+                    messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
+                    return redirect("services:services")
+            except Exception as e:
                 logger.error("Failed to install custom Wiki.JS password for user %s" % request.user)
+                logging.error(e)
                 messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
             return redirect("services:services")
+
     else:
         logger.debug("Request is not type POST - providing empty form.")
         form = ServicePasswordForm()

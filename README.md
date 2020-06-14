@@ -5,4 +5,5 @@ User and group management for [Wiki JS](https://wiki.js.org/) as a service of Al
 ## Settings
 
 WIKIJS_API_KEY = ""
+
 WIKIJS_URL = ""
