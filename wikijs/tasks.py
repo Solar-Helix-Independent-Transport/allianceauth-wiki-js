@@ -9,7 +9,7 @@ from allianceauth.services.tasks import QueueOnce
 import requests
 
 from .manager import WikiJSManager
-from .models import WikiJsUser
+from .models import WikiJs
 
 logger = logging.getLogger(__name__)
 
@@ -28,5 +28,5 @@ class WikiJSTasks:
     @staticmethod
     @shared_task(bind=True, name='wikijs.update_all_members', base=QueueOnce)
     def update_all_members(self):
-        for u in WikiJsUser.objects.all():
+        for u in WikiJs.objects.all():
             WikiJSTasks.update_member.delay(u.pk)

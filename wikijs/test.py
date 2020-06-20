@@ -8,7 +8,7 @@ from django.conf import settings
 from allianceauth.tests.auth_utils import AuthUtils
 
 from .auth_hooks import WikiJSService
-from .models import WikiJsUser
+from .models import WikiJs
 
 MODULE_PATH = 'wikijs'
 DEFAULT_AUTH_GROUP = 'Member'
@@ -24,7 +24,7 @@ class WikiJSHooksTestCase(TestCase):
     def setUp(self):
         self.member = 'member_user'
         member = AuthUtils.create_member(self.member)
-        WikiJsUser.objects.create(user=member, uid=3)
+        WikiJs.objects.create(user=member, uid=3)
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = WikiJSService
@@ -82,7 +82,7 @@ class WikiJSHooksTestCase(TestCase):
 
         # Test none user is deleted
         none_user = User.objects.get(username=self.none_user)
-        WikiJsUser.objects.create(user=none_user, uid=4)
+        WikiJs.objects.create(user=none_user, uid=4)
         service.validate_user(none_user)
         with self.assertRaises(ObjectDoesNotExist):
             none_wikijs = User.objects.get(username=self.none_user).wikijs

@@ -12,7 +12,7 @@ from graphqlclient import GraphQLClient
 
 from allianceauth.services.hooks import NameFormatter
 
-from .models import WikiJsUser
+from .models import WikiJs
 from .queries import (
     _activate_user_mutation,
     _create_group_mutation,
@@ -116,7 +116,7 @@ class WikiJSManager:
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
             uid = self.__find_user(user.email)
             if uid:
-                WikiJsUser.objects.create(user=user, uid=uid)
+                WikiJs.objects.create(user=user, uid=uid)
                 return True
         return False
 
@@ -206,7 +206,7 @@ class WikiJSManager:
                 uid = self.__create_user(user)
             else:
                 self.__activate_user(uid)
-                WikiJsUser.objects.create(user=user, uid=uid)
+                WikiJs.objects.create(user=user, uid=uid)
                 self.update_user(user)
 
             #password

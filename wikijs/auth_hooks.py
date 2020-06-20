@@ -11,7 +11,7 @@ from django.utils.crypto import get_random_string
 from .urls import urlpatterns
 from .manager import WikiJSManager
 from .tasks import WikiJSTasks
-from .models import WikiJsUser
+from .models import WikiJs
 
 logger = logging.getLogger(__name__)
 
