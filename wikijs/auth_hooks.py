@@ -46,7 +46,7 @@ class WikiJSService(ServicesHook):
 
     def update_all_groups(self):
         logger.debug('Update all %s groups called' % self.name)
-        for u in WikiJsUser.objects.all():
+        for u in WikiJs.objects.all():
             self.validate_user(u.user)
             WikiJSTasks.update_member.delay(u.user_id)
 
