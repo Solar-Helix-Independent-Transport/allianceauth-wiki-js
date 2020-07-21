@@ -14,7 +14,7 @@ with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
 os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
-    name='wikijs',
+    name='allianceauth-wiki-js',
     version=VERSION,
     packages=find_packages(),
     include_package_data=True,
@@ -22,6 +22,7 @@ setup(
     license='MIT',
     description='Alliance Auth Service module for Wiki JS',
     long_description=long_description,
+    url="https://github.com/pvyParts/allianceauth-wiki-js",
     long_description_content_type='text/markdown',
     author='AaronKable',
     author_email='aaronkable@gmail.com',

@@ -222,5 +222,8 @@ class WikiJSManager:
     def deactivate_user(self, user):
         result = self.__deactivate_user(user.wikijs.uid)
         if result:
-            user.wikijs.delete()
+            try:
+                user.wikijs.delete()
+            except:
+                pass
         return result 
