@@ -1,5 +1,5 @@
 import json
-import logging
+from allianceauth.services.hooks import get_extension_logger
 import re
 from hashlib import md5
 
@@ -25,7 +25,7 @@ from .queries import (
     _user_single_query,
 )
 
-logger = logging.getLogger(__name__)
+logger = get_extension_logger(__name__)
 
 GROUP_CACHE_MAX_AGE = getattr(settings, 'WIKIJS_GROUP_CACHE_MAX_AGE', 2 * 60 * 60)  # default 2 hours
 
@@ -118,17 +118,23 @@ class WikiJSManager:
             if uid:
                 WikiJs.objects.create(user=user, uid=uid)
                 return True
+        else:
+            logger.error("WikiJs unable to Create User. {}".format(data["data"]["users"]["create"]["responseResult"]["message"]))
         return False
 
     def __deactivate_user(self, uid):
         data = json.loads(self.client.execute(_deactivate_user_mutation, variables={"uid":uid}))
-        return data["data"]["users"]["deactivate"]["responseResult"]["succeeded"]
+        result = data["data"]["users"]["deactivate"]["responseResult"]["succeeded"]
+        if not result:
+            logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["deactivate"]["responseResult"]["message"]))
+        return result
 
     def __activate_user(self, uid):
         data = json.loads(self.client.execute(_activate_user_mutation, variables={"uid":uid}))
-        return data["data"]["users"]["activate"]["responseResult"]["succeeded"]
-
-
+        result = data["data"]["users"]["activate"]["responseResult"]["succeeded"]
+        if not result:
+            logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["activate"]["responseResult"]["message"]))
+        return result
 
     def _update_password(self, uid, password):
         data = json.loads(self.client.execute(_user_password_mutation, 
@@ -136,7 +142,10 @@ class WikiJSManager:
                                 "uid":uid,
                                 "password":password
                                 }))
-        return data["data"]["users"]["update"]["responseResult"]["succeeded"]
+        result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
+        if not result:
+            logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
+        return result
 
     def _update_user(self, user):
         from .auth_hooks import WikiJSService
@@ -153,7 +162,10 @@ class WikiJSManager:
                                 "name":name,
                                 "group_list":group_list
                                 }))
-        return data["data"]["users"]["update"]["responseResult"]["succeeded"]
+        result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
+        if not result:
+            logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
+        return result
 
 
     #Statics ******************************************************************************************************

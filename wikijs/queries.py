@@ -85,6 +85,8 @@ _create_user_mutation = \
       responseResult {
         errorCode
         succeeded
+        message
+        slug
       }
     }
   }
@@ -103,6 +105,8 @@ _user_password_mutation = \
       responseResult {
         errorCode
         succeeded
+        message
+        slug
       }
     }
   }
@@ -120,6 +124,8 @@ _deactivate_user_mutation = \
       responseResult {
         errorCode
         succeeded
+        message
+        slug
       }
     }
   }
@@ -137,6 +143,8 @@ _activate_user_mutation = \
       responseResult {
         errorCode
         succeeded
+        message
+        slug
       }
     }
   }

@@ -1,4 +1,4 @@
-import logging
+from allianceauth.services.hooks import get_extension_logger
 
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
@@ -10,7 +10,7 @@ from allianceauth.services.forms import ServicePasswordForm
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
 
-logger = logging.getLogger(__name__)
+logger = get_extension_logger(__name__)
 
 ACCESS_PERM = 'wikijs.access_wikijs'
 
@@ -67,8 +67,7 @@ def set_password(request):
                     messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
                     return redirect("services:services")
             except Exception as e:
-                logger.error("Failed to install custom Wiki.JS password for user %s" % request.user)
-                logging.error(e)
+                logger.error("Failed to install custom Wiki.JS password for user %s" % request.user, exc_info=1)
                 messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
             return redirect("services:services")
 
