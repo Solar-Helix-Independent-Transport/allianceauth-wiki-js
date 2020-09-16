@@ -60,9 +60,10 @@ class WikiJSManager:
 
         def get_or_create_group():
             groups = self._get_groups()
-            for g in groups:
-                if g['name'].lower() == name.lower():
-                    return g['id']
+            if groups is not None:
+                for g in groups:
+                    if g['name'].lower() == name.lower():
+                        return g['id']
             return self._create_group(name)['id']
 
         return cache.get_or_set(WikiJSManager._generate_cache_group_name_key(name), get_or_create_group,
