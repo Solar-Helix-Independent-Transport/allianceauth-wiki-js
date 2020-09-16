@@ -89,6 +89,8 @@ class WikiJSManager:
     def __find_user(self, email):
         data = json.loads(self.client.execute(_find_user_query, variables={"char_email":email}))
         users = data.get("data",{}).get("users",{}).get("search",[])
+        if users is None:
+            return False
         for user in users:
             if user.get("email", "").lower() == email.lower():
                 return user.get("id")
