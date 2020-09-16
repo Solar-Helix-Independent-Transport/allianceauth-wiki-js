@@ -52,9 +52,12 @@ class WikiJSManager:
 
     def _create_group(self, name):
         data = json.loads(self.client.execute(_create_group_mutation, variables={"group_name":name}))
-        if not data["data"]["groups"]["create"]["responseResult"]['succeeded']:
-            logger.error("WikiJs unable to create group. {}".format(data["data"]["groups"]["create"]["responseResult"]["message"]))
-            return None
+        try:
+            if not data["data"]["groups"]["create"]["responseResult"]['succeeded']:
+                logger.error("WikiJs unable to create group. {}".format(data["data"]["groups"]["create"]["responseResult"]["message"]))
+                return None
+        except:
+            logger.error("API returned invalid response when creating group {}".format(data), exc_info=1)
         return data.get("data",{}).get("groups").get("create").get("group")
 
 
