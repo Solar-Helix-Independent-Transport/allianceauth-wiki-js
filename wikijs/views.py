@@ -35,10 +35,10 @@ def activate_wikijs(request):
     credentials = WikiJSManager().activate_user(request.user)
 
     if credentials:
-        logger.info("Deactivated Wiki.JS %s" % request.user)
+        logger.info("Activated Wiki.JS %s" % request.user)
         messages.success(request, _('Activated Wiki.JS'))
     else:
-        logger.error("Failed to deactivate Wiki.JS for user %s" % request.user)
+        logger.error("Failed to Activate Wiki.JS for user %s" % request.user)
         messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
         return redirect("services:services")
 

@@ -116,7 +116,7 @@ class WikiJSManager:
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
             uid = self.__find_user(user.email)
             if uid:
-                WikiJs.objects.create(user=user, uid=uid)
+                WikiJs.objects.update_or_create(user=user, uid=uid)
                 return True
         else:
             logger.error("WikiJs unable to Create User. {}".format(data["data"]["users"]["create"]["responseResult"]["message"]))
@@ -127,13 +127,15 @@ class WikiJSManager:
         result = data["data"]["users"]["deactivate"]["responseResult"]["succeeded"]
         if not result:
             logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["deactivate"]["responseResult"]["message"]))
+        else:
+            WikiJs.objects.filter(uid=uid).delete()
         return result
 
     def __activate_user(self, uid):
         data = json.loads(self.client.execute(_activate_user_mutation, variables={"uid":uid}))
         result = data["data"]["users"]["activate"]["responseResult"]["succeeded"]
         if not result:
-            logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["activate"]["responseResult"]["message"]))
+            logger.error("WikiJs unable to activate User. {}".format(data["data"]["users"]["activate"]["responseResult"]["message"]))
         return result
 
     def _update_password(self, uid, password):
@@ -144,7 +146,7 @@ class WikiJSManager:
                                 }))
         result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
         if not result:
-            logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
+            logger.error("WikiJs unable to update password for User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
         return result
 
     def _update_user(self, user):
@@ -164,7 +166,7 @@ class WikiJSManager:
                                 }))
         result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
         if not result:
-            logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
+            logger.error("WikiJs unable to update User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
         return result
 
 
@@ -212,13 +214,14 @@ class WikiJSManager:
         #search
         try:
             uid = self.__find_user(user.email)
-            
             #create
             if not uid:
+                logger.info("Creating new user for {}".format(user.username))
                 uid = self.__create_user(user)
             else:
+                logger.info("reactivating disabled account for {}".format(user.username))
                 self.__activate_user(uid)
-                WikiJs.objects.create(user=user, uid=uid)
+                WikiJs.objects.update_or_create(user=user, uid=uid)
                 self.update_user(user)
 
             #password
@@ -228,7 +231,7 @@ class WikiJSManager:
             #return
             return password
         except Exception as e:
-            logger.error(e)
+            logger.error(e,exc_info=1)
             return False
 
     def deactivate_user(self, user):
