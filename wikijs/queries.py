@@ -39,6 +39,12 @@ _create_group_mutation = \
        id
        name
       }
+      responseResult {
+        message
+        succeeded
+        errorCode
+        slug
+      }
     }
   }
 }'''
