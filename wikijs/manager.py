@@ -228,7 +228,7 @@ class WikiJSManager:
             #return
             return password
         except Exception as e:
-            logging.error(e)
+            logger.error(e)
             return False
 
     def deactivate_user(self, user):
