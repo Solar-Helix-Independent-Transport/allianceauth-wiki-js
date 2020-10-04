@@ -244,7 +244,12 @@ class WikiJSManager:
             return False
 
     def deactivate_user(self, user):
-        result = self.__deactivate_user(user.wikijs.uid)
+
+        try:
+            result = self.__deactivate_user(user.wikijs.uid)
+        except AttributeError: #no wikijs model
+            return True
+
         if result:
             try:
                 user.wikijs.delete()
