@@ -28,6 +28,8 @@ class WikiJSHooksTestCase(TestCase):
         self.none_user = 'none_user'
         none_user = AuthUtils.create_user(self.none_user)
         self.service = WikiJSService
+        self.del_user = 'del_user'
+        del_user = AuthUtils.create_user(self.del_user)
         add_permissions()
 
     def test_has_account(self):
@@ -44,6 +46,9 @@ class WikiJSHooksTestCase(TestCase):
 
         self.assertTrue(service.service_active_for_user(member))
         self.assertFalse(service.service_active_for_user(none_user))
+
+    def test_delete_user_with_no_wiki(self):  #this deosnt fail properly on sqlite investigate more tests on mysql/psql
+        none_user = User.objects.get(username=self.del_user).delete()
 
     @mock.patch(MODULE_PATH + '.manager.WikiJSManager._update_user')
     def test_update_user(self, disable):
@@ -91,7 +96,6 @@ class WikiJSHooksTestCase(TestCase):
     def test_delete_user(self, disable):
         disable.execute.return_value = '{"data": {"users": {"deactivate": {"responseResult": {"succeeded": true}}}}}'
         member = User.objects.get(username=self.member)
-
         service = self.service()
         result = service.delete_user(member)
 
