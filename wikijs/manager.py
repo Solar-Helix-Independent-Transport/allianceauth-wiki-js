@@ -126,7 +126,7 @@ class WikiJSManager:
             uid = self.__find_user(user.email)
             if uid:
                 WikiJs.objects.update_or_create(user=user, uid=uid)
-                return True
+                return uid
         else:
             logger.error("WikiJs unable to Create User. {}".format(data["data"]["users"]["create"]["responseResult"]["message"]))
         return False
