@@ -95,7 +95,7 @@ class WikiJSManager:
     ### Users *****************************************************************************************************
     def __find_user(self, email):
         logger.debug("Hitting API looking for: {}".format(email[:10]))
-        data = json.loads(self.client.execute(_find_user_query, variables={"char_email":email}))
+        data = json.loads(self.client.execute(_find_user_query, variables={"char_email":email.lower()}))
         logger.debug("API returned: {}".format(data))
         users = data.get("data", {}).get("users", {}).get("search", [])
         if users is None:
@@ -121,12 +121,12 @@ class WikiJSManager:
         data = json.loads(self.client.execute(_create_user_mutation, 
                             variables={
                                 "group_list":group_list,
-                                "email":user.email,
+                                "email":user.email.lower(),
                                 "name":name,
                                 "pass":password}))
         logger.debug("API returned: {}".format(data))
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
-            uid = self.__find_user(user.email)
+            uid = self.__find_user(user.lower())
             if uid:
                 WikiJs.objects.update_or_create(user=user, uid=uid)
                 return uid
@@ -225,7 +225,7 @@ class WikiJSManager:
     def activate_user(self, user):
         #search
         try:
-            uid = self.__find_user(user.email)
+            uid = self.__find_user(user.email.lower())
             #create
             if not uid:
                 logger.info("Creating new user for {}".format(user.username))
