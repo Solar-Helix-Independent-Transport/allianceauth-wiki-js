@@ -94,8 +94,10 @@ class WikiJSManager:
     
     ### Users *****************************************************************************************************
     def __find_user(self, email):
+        logger.debug("Hitting API looking for: {}".format(email[:10]))
         data = json.loads(self.client.execute(_find_user_query, variables={"char_email":email}))
-        users = data.get("data",{}).get("users",{}).get("search",[])
+        logger.debug("API returned: {}".format(data))
+        users = data.get("data", {}).get("users", {}).get("search", [])
         if users is None:
             return False
         for user in users:
@@ -122,6 +124,7 @@ class WikiJSManager:
                                 "email":user.email,
                                 "name":name,
                                 "pass":password}))
+        logger.debug("API returned: {}".format(data))
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
             uid = self.__find_user(user.email)
             if uid:
