@@ -156,3 +156,19 @@ _activate_user_mutation = \
   }
 }
 '''
+
+_find_pages_query = \
+'''query find_pages($search_str:String!, $locale:String!){
+  pages{
+    search(query:$search_str,locale: $locale){
+      results{
+        id
+        title
+        description
+        path
+      }
+      suggestions
+    }
+  }
+}
+'''
