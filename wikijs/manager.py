@@ -267,7 +267,7 @@ class WikiJSManager:
                 pass
         return result
 
-    def search_for_page(self, string: str) -> []:
+    def search_for_page(self, string: str) -> dict:
         """
         Returns Search results for a WikiJS page search
         """
