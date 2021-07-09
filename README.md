@@ -26,6 +26,7 @@ Setting | default | Description
 --- | --- | ---
 WIKIJS_API_KEY | "" | your global API key from the wiki admin section
 WIKIJS_URL | "" | You Wiki's base URL
+WIKIJS_AADISCORDBOT_INTEGRATION | True | Enables an AADiscordbot cog with the ability to search the wiki
 
 ## FAQ
 * I lost admin when i registered my admin user.
