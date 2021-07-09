@@ -79,10 +79,10 @@ class WikiJSService(ServicesHook):
 def register_service():
     return WikiJSService()
 
+
 @hooks.register('discord_cogs_hook')
 def register_cogs():
     if WIKIJS_AADISCORDBOT_INTEGRATION is True:
         return ["wikijs.cogs.wikijs"]
     else:
         return [""]
-
