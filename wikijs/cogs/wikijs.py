@@ -54,4 +54,4 @@ class Wikijs(commands.Cog):
 
 
 def setup(bot):
-    bot.add_cog(Fittings(bot))
+    bot.add_cog(Wikijs(bot))
