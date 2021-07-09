@@ -34,7 +34,7 @@ class Wikijs(commands.Cog):
         await ctx.message.add_reaction(chr(0x231B))
 
         try:
-            pagesearchresponse = WikiJSManager.search_for_page(search_string)
+            pagesearchresponse = WikiJSManager().search_for_page(search_string)
         except Exception as e:
             logger.error(e)
 
