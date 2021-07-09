@@ -14,7 +14,7 @@ from django.conf import settings
 import re
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('wikijs.cogs.wikijs')
 
 
 class Fittings(commands.Cog):
