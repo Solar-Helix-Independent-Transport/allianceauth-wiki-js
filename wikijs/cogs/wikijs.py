@@ -13,7 +13,7 @@ from django.conf import settings
 import re
 
 import logging
-logger = logging.getLogger('wikijs.cogs.wikijs')
+logger = logging.getLogger('aadiscordbot.cogs.wikijs')
 
 
 class Wikijs(commands.Cog):
