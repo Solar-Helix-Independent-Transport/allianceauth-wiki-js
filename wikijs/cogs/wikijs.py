@@ -7,7 +7,6 @@ from discord.colour import Color
 
 # AA Contexts
 from aadiscordbot.cogs.utils.decorators import sender_has_perm
-from aadiscordbot.app_settings import get_site_url
 from wikijs.manager import WikiJSManager
 from django.conf import settings
 
@@ -22,7 +21,6 @@ class Wikijs(commands.Cog):
     WikiJS relevant cogs for AADiscordbot
     Currently onlt implements minimal search
     """
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -50,7 +48,7 @@ class Wikijs(commands.Cog):
                 value=f"{settings.WIKIJS_URL}{path}"
             )
 
-        return embed
+        return await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):
