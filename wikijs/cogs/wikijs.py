@@ -17,10 +17,10 @@ import logging
 logger = logging.getLogger('wikijs.cogs.wikijs')
 
 
-class Fittings(commands.Cog):
+class Wikijs(commands.Cog):
     """
-    A Cog to respond to AA Fittings Links
-    Includes more information as the Discord Embed for AA is of limited Use
+    WikiJS relevant cogs for AADiscordbot
+    Currently onlt implements minimal search
     """
 
     def __init__(self, bot):
