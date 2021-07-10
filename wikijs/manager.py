@@ -95,9 +95,10 @@ class WikiJSManager:
 
     ### Pages ********************************
 
-    def __find_pages(self, string):
-        logger.debug(f"Hitting API looking for page {string}")
-        data = json.loads(self.client.execute(_find_pages_query, variables={"search_str":string, "locale": "en"}))
+    def __find_pages(self, search_string, locale):
+        logger.debug(f"Hitting API looking for page {search_string}")
+        data = json.loads(self.client.execute(_find_pages_query, variables={"search_str":search_string, "locale": locale}))
+        return data
     
     ### Users *****************************************************************************************************
     def __find_user(self, email):
@@ -267,12 +268,12 @@ class WikiJSManager:
                 pass
         return result
 
-    def search_for_page(self, string: str) -> dict:
+    def search_for_page(self, search_string: str, locale: str = 'en') -> dict:
         """
         Returns Search results for a WikiJS page search
         """
         try: 
-            result = self.__find_pages(string)
+            result = self.__find_pages(search_string, locale)
         except Exception as e:
             logger.error(e)
 
