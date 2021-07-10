@@ -36,14 +36,14 @@ class Wikijs(commands.Cog):
 
         try:
             pagesearchresponse = WikiJSManager().search_for_page(search_string)
-            logger.debug("WikiJS Cog: page search response {pagesearchresponse}")
+            logger.debug(f"WikiJS Cog: page search response {pagesearchresponse}")
         except Exception as e:
             logger.error(e)
 
         embed = Embed(title=f"WikiJS Search: {search_string}")
 
         for result in pagesearchresponse["data"]["pages"]["search"]["results"]:
-            logger.debug("WikiJS Cog: single page {result}")
+            logger.debug(f"WikiJS Cog: single page {result}")
             title = result["title"]
             path = result["path"]
             embed.add_field(
