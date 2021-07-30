@@ -23,6 +23,7 @@ from .queries import (
     _update_user_mutation,
     _user_password_mutation,
     _user_single_query,
+    _find_pages_query,
 )
 
 logger = get_extension_logger(__name__)
@@ -91,6 +92,13 @@ class WikiJSManager:
         for name in names:
             group_list.append(self.__group_name_to_id(name))
         return group_list
+
+    ### Pages ********************************
+
+    def __find_pages(self, search_string, locale):
+        logger.debug(f"Hitting API looking for page {search_string}")
+        data = json.loads(self.client.execute(_find_pages_query, variables={"search_str":search_string, "locale": locale}))
+        return data
     
     ### Users *****************************************************************************************************
     def __find_user(self, email):
@@ -258,4 +266,15 @@ class WikiJSManager:
                 user.wikijs.delete()
             except:
                 pass
-        return result 
+        return result
+
+    def search_for_page(self, search_string: str, locale: str = 'en') -> dict:
+        """
+        Returns Search results for a WikiJS page search
+        """
+        try: 
+            result = self.__find_pages(search_string, locale)
+        except Exception as e:
+            logger.error(e)
+
+        return result

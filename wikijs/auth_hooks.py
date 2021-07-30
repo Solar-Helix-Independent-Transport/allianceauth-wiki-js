@@ -7,12 +7,12 @@ from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.crypto import get_random_string
+from wikijs.app_settings import WIKIJS_AADISCORDBOT_INTEGRATION
 
 from .urls import urlpatterns
 from .manager import WikiJSManager
 from .tasks import WikiJSTasks
 from .models import WikiJs
-
 logger = logging.getLogger(__name__)
 
 
@@ -78,3 +78,11 @@ class WikiJSService(ServicesHook):
 @hooks.register('services_hook')
 def register_service():
     return WikiJSService()
+
+
+@hooks.register('discord_cogs_hook')
+def register_cogs():
+    if WIKIJS_AADISCORDBOT_INTEGRATION is True:
+        return ["wikijs.cogs.wikijs"]
+    else:
+        return [""]
