@@ -26,13 +26,15 @@ class Wikijs(commands.Cog):
 
     @commands.command(pass_context=True)
     @sender_has_perm('wikijs.access_wikijs')
-    async def wiki(self, ctx, search_string):
+    async def wiki(self, ctx):
         """
         Returns the top Wiki Article search result for a string
         """
         logger.debug("WikiJS Cog: !wikijs received")
         await ctx.channel.trigger_typing()
         await ctx.message.add_reaction(chr(0x231B))
+
+        search_string = ctx.message.content[6:]
 
         try:
             pagesearchresponse = WikiJSManager().search_for_page(search_string)
