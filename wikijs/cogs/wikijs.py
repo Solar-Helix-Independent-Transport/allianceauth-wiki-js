@@ -35,7 +35,7 @@ class Wikijs(commands.Cog):
         await ctx.message.add_reaction(chr(0x231B))
 
         search_string = ctx.message.content[6:]
-        if search_string == " ":
+        if search_string == "":
             embed = Embed(title="WikiJS")
             embed.colour = Color.blue()
             embed.add_field(
