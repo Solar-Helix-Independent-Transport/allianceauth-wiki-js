@@ -35,6 +35,15 @@ class Wikijs(commands.Cog):
         await ctx.message.add_reaction(chr(0x231B))
 
         search_string = ctx.message.content[6:]
+        if search_string == "":
+            embed = Embed(title="WikiJS")
+            embed.colour = Color.blue()
+            embed.add_field(
+                name="Wiki Link",
+                value=f"{settings.WIKIJS_URL}"
+            )
+            await ctx.message.clear_reaction(chr(0x231B))
+            return await ctx.reply(embed=embed, mention_author=False)
 
         try:
             pagesearchresponse = WikiJSManager().search_for_page(search_string)
