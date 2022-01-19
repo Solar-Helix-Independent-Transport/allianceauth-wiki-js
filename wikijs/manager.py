@@ -25,6 +25,7 @@ from .queries import (
     _user_single_query,
     _find_pages_query,
 )
+from .app_settings import WIKIJS_API_URL
 
 logger = get_extension_logger(__name__)
 
@@ -41,7 +42,7 @@ class WikiJSManager:
     @property
     def client(self):
         if not self._client:
-            self._client = GraphQLClient("{}/graphql".format(settings.WIKIJS_URL))
+            self._client = GraphQLClient("{}/graphql".format(WIKIJS_API_URL))
             self._client.inject_token("Bearer {}".format(settings.WIKIJS_API_KEY))
         return self._client
 
@@ -134,7 +135,7 @@ class WikiJSManager:
                                 "pass":password}))
         logger.debug("API returned: {}".format(data))
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
-            uid = self.__find_user(user.lower())
+            uid = self.__find_user(user.email.lower())
             if uid:
                 WikiJs.objects.update_or_create(user=user, uid=uid)
                 return uid
@@ -164,10 +165,14 @@ class WikiJSManager:
                                 "uid":uid,
                                 "password":password
                                 }))
-        result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
-        if not result:
-            logger.error("WikiJs unable to update password for User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
-        return result
+        try:
+            result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
+            if not result:
+                logger.error("WikiJs unable to update password for User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
+            return result
+        except TypeError:
+            logger.error("WikiJs unable to update password for User. {}".format(uid))
+            return False
 
     def _update_user(self, user):
         from .auth_hooks import WikiJSService
@@ -184,10 +189,14 @@ class WikiJSManager:
                                 "name":name,
                                 "group_list":group_list
                                 }))
-        result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
-        if not result:
-            logger.error("WikiJs unable to update User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
-        return result
+        try:
+            result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
+            if not result:
+                logger.error("WikiJs unable to update User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
+            return result
+        except TypeError:
+            logger.error("WikiJs unable to update User. {}".format(user.wikijs.uid))
+            return False
 
 
     #Statics ******************************************************************************************************
