@@ -1,6 +1,6 @@
 import os
 from setuptools import find_packages, setup
-from wikijs import VERSION
+from wikijs import __VERSION__
 
 install_requires = [
     'graphqlclient',
@@ -15,7 +15,7 @@ os.chdir(os.path.normpath(os.path.join(os.path.abspath(__file__), os.pardir)))
 
 setup(
     name='allianceauth-wiki-js',
-    version=VERSION,
+    version=__VERSION__,
     packages=find_packages(),
     include_package_data=True,
     install_requires=install_requires,
@@ -28,8 +28,8 @@ setup(
     author_email='aaronkable@gmail.com',
     classifiers=[
         'Environment :: Web Environment',
-        'Framework :: Django',        
-        'Framework :: Django :: 2.2',
+        'Framework :: Django',
+        'Framework :: Django :: 3.2',
         'Intended Audience :: Developers',
         'Operating System :: OS Independent',
         'Programming Language :: Python',

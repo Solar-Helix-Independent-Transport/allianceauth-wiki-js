@@ -28,6 +28,21 @@ WIKIJS_API_KEY | "" | your global API key from the wiki admin section
 WIKIJS_URL | "" | You Wiki's base URL
 WIKIJS_AADISCORDBOT_INTEGRATION | True | Enables an AADiscordbot cog with the ability to search the wiki
 
+If you have issues with auth not being able to access the wiki due to SSL/redirection or similar. ( Cloudlfair can cause issues)
+
+Setting | default | Description
+--- | --- | ---
+WIKIJS_API_URL | WIKIJS_URL | URL Overide for API access
+
+add this setting to your local py with a direct link to the wiki
+```python
+# if auth is on the same box as wiki
+WIKIJS_API_URL = "http://localhost:3000"
+
+# if auth is on a different machine you could use the public ip adress of that machine.
+WIKIJS_API_URL = "http://10.0.0.150:3000"
+```
+
 ## FAQ
 * I lost admin when i registered my admin user.
     * add a group called `Administrators` to your auth instance and give it to anyone who needs admin on the wiki.
