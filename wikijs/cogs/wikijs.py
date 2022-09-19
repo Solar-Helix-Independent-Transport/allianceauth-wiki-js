@@ -18,7 +18,7 @@ class Wikijs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    wikijs_commands = SlashCommandGroup("wiki", "Django Model Population", guild_ids=[
+    wikijs_commands = SlashCommandGroup("wiki", "Wiki JS", guild_ids=[
                                 int(settings.DISCORD_GUILD_ID)])
 
     @wikijs_commands.command(name="search", description="Search WikiJS", guild_ids=[int(settings.DISCORD_GUILD_ID)])
