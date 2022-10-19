@@ -4,13 +4,17 @@ Simple User and group management for [Wiki JS](https://wiki.js.org/) as a servic
 
 ## Setup
 0. install and setup your Wiki.js instance [from the Wiki Docs](https://docs.requarks.io/)
-1. activate venv
-2. `pip install -U allianceauth-wiki-js`
-3. add `'wikijs',` to your `INSTALLED_APPS` in your projects `local.py`
-4. generate a `Full Access` API key iun the wiki with maximum expiration be sure to copy it as the key wont be shown again.
-5. add the settings ( outlined below ) to your `local.py`
-6. run migrations and restart auth
-7. setup permissions ( outlined below )
+1. If using mumble `ufw allow 64738`
+2. If using teamspeak: `ufw allow 9987,10011,10022 proto udp` and `ufw allow 30033 proto tcp`
+3. If using discord: `ufw allow 6463:6472`
+4. activate venv
+5. `pip install -U allianceauth-wiki-js`
+6. add `'wikijs',` to your `INSTALLED_APPS` in your projects `local.py`
+7. generate a `Full Access` API key iun the wiki with maximum expiration be sure to copy it as the key wont be shown again.
+8. add the settings ( outlined below ) to your `local.py`
+9. run migrations and restart auth
+10. setup permissions ( outlined below )
+11. OPTIONAL: If you encounter issues with other AA community modules, disable UFW `ufw --force disable` and reboot your distro.
 
 ## Permissions
 Perm | Codename | Admin | Frontend
