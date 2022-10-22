@@ -1,12 +1,15 @@
 # Cog used by https://github.com/pvyParts/allianceauth-discordbot
-from discord.ext import commands
-from discord.embeds import Embed
-from discord.commands import SlashCommandGroup
+import logging
+
 from aadiscordbot.cogs.utils.decorators import sender_has_perm
-from wikijs.manager import WikiJSManager
+from discord.commands import SlashCommandGroup
+from discord.embeds import Embed
+from discord.ext import commands
+
 from django.conf import settings
 
-import logging
+from wikijs.manager import WikiJSManager
+
 logger = logging.getLogger('aadiscordbot.cogs.wikijs')
 
 
@@ -41,7 +44,7 @@ class Wikijs(commands.Cog):
             embed.add_field(
                 name=title,
                 value=f"{settings.WIKIJS_URL}{path}"
-            )    
+            )
         return await ctx.respond(embed=embed)
 
     @wikijs_commands.command(name="link", description="Link to the Wiki", guild_ids=[int(settings.DISCORD_GUILD_ID)])

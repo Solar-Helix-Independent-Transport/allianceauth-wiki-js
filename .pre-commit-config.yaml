@@ -42,10 +42,12 @@ repos:
         exclude: |
           (?x)(
             LICENSE|
+            LICENCE|
             allianceauth\/static\/allianceauth\/css\/themes\/bootstrap-locals.less|
             \.po|
             \.mo|
-            swagger\.json
+            swagger\.json|
+            queries.py
           )
 
   - repo: https://github.com/asottile/pyupgrade

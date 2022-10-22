@@ -11,9 +11,9 @@ class WikiJs(models.Model):
     uid = models.BigIntegerField()
 
     def __str__(self):
-        return "WikiJS User - {}".format(self.user.username)
+        return f"WikiJS User - {self.user.username}"
 
     class Meta:
         permissions = (
-            ("access_wikijs", u"Can access the WikiJS service"),
+            ("access_wikijs", "Can access the WikiJS service"),
         )

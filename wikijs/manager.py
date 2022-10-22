@@ -1,31 +1,25 @@
 import json
-from allianceauth.services.hooks import get_extension_logger
 import re
 from hashlib import md5
 
 import requests
+from graphqlclient import GraphQLClient
+
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import ObjectDoesNotExist
 from django.utils.crypto import get_random_string
-from graphqlclient import GraphQLClient
 
-from allianceauth.services.hooks import NameFormatter
+from allianceauth.services.hooks import NameFormatter, get_extension_logger
 
+from .app_settings import WIKIJS_API_URL
 from .models import WikiJs
 from .queries import (
-    _activate_user_mutation,
-    _create_group_mutation,
-    _create_user_mutation,
-    _deactivate_user_mutation,
-    _find_user_query,
-    _get_group_list_query,
-    _update_user_mutation,
-    _user_password_mutation,
+    _activate_user_mutation, _create_group_mutation, _create_user_mutation,
+    _deactivate_user_mutation, _find_pages_query, _find_user_query,
+    _get_group_list_query, _update_user_mutation, _user_password_mutation,
     _user_single_query,
-    _find_pages_query,
 )
-from .app_settings import WIKIJS_API_URL
 
 logger = get_extension_logger(__name__)
 
@@ -42,8 +36,8 @@ class WikiJSManager:
     @property
     def client(self):
         if not self._client:
-            self._client = GraphQLClient("{}/graphql".format(WIKIJS_API_URL))
-            self._client.inject_token("Bearer {}".format(settings.WIKIJS_API_KEY))
+            self._client = GraphQLClient(f"{WIKIJS_API_URL}/graphql")
+            self._client.inject_token(f"Bearer {settings.WIKIJS_API_KEY}")
         return self._client
 
     ### Groups! ****************************************************************************************************
@@ -59,7 +53,7 @@ class WikiJSManager:
                 logger.error("WikiJs unable to create group. {}".format(data["data"]["groups"]["create"]["responseResult"]["message"]))
                 return None
         except:
-            logger.error("API returned invalid response when creating group {}".format(data), exc_info=1)
+            logger.error(f"API returned invalid response when creating group {data}", exc_info=1)
         return data.get("data",{}).get("groups").get("create").get("group")
 
 
@@ -87,7 +81,7 @@ class WikiJSManager:
 
         return cache.get_or_set(WikiJSManager._generate_cache_group_id_key(g_id), get_group_name,
                                 GROUP_CACHE_MAX_AGE)
-    
+
     def __generate_group_list(self, names):
         group_list = []
         for name in names:
@@ -100,12 +94,12 @@ class WikiJSManager:
         logger.debug(f"Hitting API looking for page {search_string}")
         data = json.loads(self.client.execute(_find_pages_query, variables={"search_str":search_string, "locale": locale}))
         return data
-    
+
     ### Users *****************************************************************************************************
     def __find_user(self, email):
-        logger.debug("Hitting API looking for: {}".format(email[:10]))
+        logger.debug(f"Hitting API looking for: {email[:10]}")
         data = json.loads(self.client.execute(_find_user_query, variables={"char_email":email.lower()}))
-        logger.debug("API returned: {}".format(data))
+        logger.debug(f"API returned: {data}")
         users = data.get("data", {}).get("users", {}).get("search", [])
         if users is None:
             return False
@@ -125,15 +119,15 @@ class WikiJSManager:
         groups = [WikiJSManager._sanitize_groupname(user.profile.state.name)]
         for g in user.groups.all():
             groups.append(WikiJSManager._sanitize_groupname(str(g)))
-        
+
         group_list = self.__generate_group_list(groups)
-        data = json.loads(self.client.execute(_create_user_mutation, 
+        data = json.loads(self.client.execute(_create_user_mutation,
                             variables={
                                 "group_list":group_list,
                                 "email":user.email.lower(),
                                 "name":name,
                                 "pass":password}))
-        logger.debug("API returned: {}".format(data))
+        logger.debug(f"API returned: {data}")
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
             uid = self.__find_user(user.email.lower())
             if uid:
@@ -160,7 +154,7 @@ class WikiJSManager:
         return result
 
     def _update_password(self, uid, password):
-        data = json.loads(self.client.execute(_user_password_mutation, 
+        data = json.loads(self.client.execute(_user_password_mutation,
                             variables={
                                 "uid":uid,
                                 "password":password
@@ -171,7 +165,7 @@ class WikiJSManager:
                 logger.error("WikiJs unable to update password for User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
             return result
         except TypeError:
-            logger.error("WikiJs unable to update password for User. {}".format(uid))
+            logger.error(f"WikiJs unable to update password for User. {uid}")
             return False
 
     def _update_user(self, user):
@@ -183,7 +177,7 @@ class WikiJSManager:
         group_list = self.__generate_group_list(groups)
         name = NameFormatter(WikiJSService(), user).format_name()
 
-        data = json.loads(self.client.execute(_update_user_mutation, 
+        data = json.loads(self.client.execute(_update_user_mutation,
                             variables={
                                 "uid":user.wikijs.uid,
                                 "name":name,
@@ -195,7 +189,7 @@ class WikiJSManager:
                 logger.error("WikiJs unable to update User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
             return result
         except TypeError:
-            logger.error("WikiJs unable to update User. {}".format(user.wikijs.uid))
+            logger.error(f"WikiJs unable to update User. {user.wikijs.uid}")
             return False
 
 
@@ -219,7 +213,7 @@ class WikiJSManager:
 
     @staticmethod
     def _sanitize_groupname(name):
-        name = re.sub('[^\w]', '', name)
+        name = re.sub(r'[^\w]', '', name)
         name = WikiJSManager._sanitize_name(name)
         if len(name) < 3:
             name = "Group " + name
@@ -245,10 +239,10 @@ class WikiJSManager:
             uid = self.__find_user(user.email.lower())
             #create
             if not uid:
-                logger.info("Creating new user for {}".format(user.username))
+                logger.info(f"Creating new user for {user.username}")
                 uid = self.__create_user(user)
             else:
-                logger.info("reactivating disabled account for {}".format(user.username))
+                logger.info(f"reactivating disabled account for {user.username}")
                 self.__activate_user(uid)
                 WikiJs.objects.update_or_create(user=user, uid=uid)
                 self.update_user(user)
@@ -281,7 +275,7 @@ class WikiJSManager:
         """
         Returns Search results for a WikiJS page search
         """
-        try: 
+        try:
             result = self.__find_pages(search_string, locale)
         except Exception as e:
             logger.error(e)

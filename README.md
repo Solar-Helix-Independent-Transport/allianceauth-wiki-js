@@ -1,6 +1,6 @@
 # Wiki-JS service
 
-Simple User and group management for [Wiki JS](https://wiki.js.org/) as a service of AllianceAuth 
+Simple User and group management for [Wiki JS](https://wiki.js.org/) as a service of AllianceAuth
 
 ## Setup
 
