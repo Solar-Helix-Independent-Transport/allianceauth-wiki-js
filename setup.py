@@ -1,11 +1,8 @@
 import os
-from setuptools import find_packages, setup
-from wikijs import __VERSION__
 
-install_requires = [
-    'graphqlclient',
-    'allianceauth'
-]
+from setuptools import find_packages, setup
+
+from wikijs import __VERSION__
 
 this_directory = os.path.abspath(os.path.dirname(__file__))
 with open(os.path.join(this_directory, 'README.md'), encoding='utf-8') as f:
@@ -18,7 +15,6 @@ setup(
     version=__VERSION__,
     packages=find_packages(),
     include_package_data=True,
-    install_requires=install_requires,
     license='MIT',
     description='Alliance Auth Service module for Wiki JS',
     long_description=long_description,
@@ -30,14 +26,25 @@ setup(
         'Environment :: Web Environment',
         'Framework :: Django',
         'Framework :: Django :: 3.2',
+        'Framework :: Django :: 4',
         'Intended Audience :: Developers',
-        'Operating System :: OS Independent',
+        'License :: OSI Approved :: GNU General Public License v3 (GPLv3)',
+        'Operating System :: POSIX :: Linux',
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.6',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
+        'Programming Language :: Python :: 3.9',
+        'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
         'Topic :: Internet :: WWW/HTTP',
         'Topic :: Internet :: WWW/HTTP :: Dynamic Content',
     ],
+    python_requires='>=3.8',
+    install_requires=[
+        "allianceauth>=2.15.1,<4.0.0",
+        "graphqlclient"
+    ],
+    extras_require={
+        'discordbot': ["allianceauth-discordbot>=3.0.0"]
+    },
 )

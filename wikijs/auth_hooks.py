@@ -1,18 +1,20 @@
 import logging
 
-from django.template.loader import render_to_string
 from django.conf import settings
+from django.core.exceptions import ObjectDoesNotExist
+from django.template.loader import render_to_string
+from django.utils.crypto import get_random_string
 
 from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook
-from django.core.exceptions import ObjectDoesNotExist
-from django.utils.crypto import get_random_string
+
 from wikijs.app_settings import WIKIJS_AADISCORDBOT_INTEGRATION
 
-from .urls import urlpatterns
 from .manager import WikiJSManager
-from .tasks import WikiJSTasks
 from .models import WikiJs
+from .tasks import WikiJSTasks
+from .urls import urlpatterns
+
 logger = logging.getLogger(__name__)
 
 
@@ -30,16 +32,16 @@ class WikiJSService(ServicesHook):
         return self.name
 
     def delete_user(self, user):
-        logger.debug('Deleting user %s %s account' % (user, self.name))
+        logger.debug(f'Deleting user {user} {self.name} account')
         return WikiJSManager().deactivate_user(user)
 
     def validate_user(self, user):
-        logger.debug('Validating user %s %s account' % (user, self.name))
+        logger.debug(f'Validating user {user} {self.name} account')
         if self.user_has_account(user) and not self.service_active_for_user(user):
             WikiJSManager().deactivate_user(user)
 
     def update_groups(self, user):
-        logger.debug('Updating %s groups for %s' % (self.name, user))
+        logger.debug(f'Updating {self.name} groups for {user}')
         if self.user_has_account(user):
             return WikiJSTasks.update_member.delay(user.pk)
         return False

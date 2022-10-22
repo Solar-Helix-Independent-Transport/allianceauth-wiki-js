@@ -1,12 +1,14 @@
 import logging
 
+import requests
+from celery import shared_task
+
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
+
 from allianceauth.notifications import notify
-from celery import shared_task
 from allianceauth.services.tasks import QueueOnce
-import requests
 
 from .manager import WikiJSManager
 from .models import WikiJs
@@ -24,7 +26,7 @@ class WikiJSTasks:
             return "User has no Wiki.JS account"
         else:
             return f"Updated Wiki.JS for {u.username}, Result:{WikiJSManager().update_user(u)}"
-    
+
     @staticmethod
     @shared_task(bind=True, name='wikijs.update_all_members', base=QueueOnce)
     def update_all_members(self):

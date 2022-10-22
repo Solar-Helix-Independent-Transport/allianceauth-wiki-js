@@ -1,14 +1,15 @@
-from allianceauth.services.hooks import get_extension_logger
-
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.decorators import permission_required
-from django.contrib.auth.decorators import user_passes_test
-from django.shortcuts import render, redirect
-from .manager import WikiJSManager
-from allianceauth.services.forms import ServicePasswordForm
+from django.contrib.auth.decorators import (
+    login_required, permission_required, user_passes_test,
+)
+from django.shortcuts import redirect, render
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
+
+from allianceauth.services.forms import ServicePasswordForm
+from allianceauth.services.hooks import get_extension_logger
+
+from .manager import WikiJSManager
 
 logger = get_extension_logger(__name__)
 
@@ -31,7 +32,7 @@ def deactivate_wikijs(request):
 @login_required
 @permission_required(ACCESS_PERM)
 def activate_wikijs(request):
-    
+
     credentials = WikiJSManager().activate_user(request.user)
 
     if credentials:
@@ -95,4 +96,3 @@ def reset_password(request):
 
     return render(request, 'services/service_credentials.html',
                 context={'credentials': {"password":password}, 'service': 'Wiki.JS'})
-

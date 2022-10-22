@@ -13,8 +13,8 @@ services:
   - redis-server
 matrix:
   include:
-   - env: TOXENV=py36
-     python: '3.6.7'
+    - env: TOXENV=py310
+      python: '3.10.8'
 deploy:
   provider: pypi
   user: __token__

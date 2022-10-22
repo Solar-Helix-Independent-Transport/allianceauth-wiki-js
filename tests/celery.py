@@ -1,4 +1,5 @@
 import os
+
 from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
@@ -18,4 +19,3 @@ app.conf.ONCE = {
 
 # Load task modules from all registered Django app configs.
 app.autodiscover_tasks(lambda: settings.INSTALLED_APPS)
-
