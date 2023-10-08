@@ -33,7 +33,7 @@ msgstr ""
 
 #: views.py:40
 msgid "Activated Wiki.JS"
-msgstr ""
+msgstr "Aktiviere Wiki.JS"
 
 #: views.py:65 views.py:91
 msgid "Set Wiki.JS password."
