@@ -1,4 +1,6 @@
 include LICENSE
 include README.md
 recursive-include wikijs/ *.py
+recursive-include wikijs/templates *.html
+
 
