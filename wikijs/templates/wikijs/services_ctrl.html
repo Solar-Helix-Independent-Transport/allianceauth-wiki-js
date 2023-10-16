@@ -1,0 +1,12 @@
+{% load i18n %}
+
+<tr>
+    <td class="text-center">{{ service_name }}</td>
+    <td class="text-center">{{ username }}</td>
+    <td class="text-center"><a href="{{ service_url }}">{{ service_url }}</a></td>
+    <td class="text-center">
+        <a href="{{ service_url }}" class="btn btn-success" title="Connect">
+            Login with Auth <span class="glyphicon glyphicon-arrow-right"></span>
+        </a>
+</td>
+</tr>

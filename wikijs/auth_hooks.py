@@ -17,6 +17,7 @@ logger = logging.getLogger(__name__)
 
 
 class WikiJSService(ServicesHook):
+    
     def __init__(self):
         ServicesHook.__init__(self)
         self.urlpatterns = urlpatterns
@@ -24,7 +25,8 @@ class WikiJSService(ServicesHook):
         self.service_url = settings.WIKIJS_URL
         self.access_perm = 'wikijs.access_wikijs'
         self.name_format = '{character_name}'
-
+        self.service_ctrl_template = 'wikijs/services_ctrl.html'
+        
     @property
     def title(self):
         return self.name
