@@ -26,4 +26,4 @@ deploy:
 	twine upload dist/*
 
 package:
-	python setup.py sdist
+	python build
