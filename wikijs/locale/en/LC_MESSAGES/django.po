@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-10-08 22:01+1000\n"
+"POT-Creation-Date: 2024-07-04 15:41+1000\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -18,18 +18,19 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: views.py:24
+#: wikijs/views.py:23
 msgid "Deactivated Wiki.JS"
 msgstr ""
 
-#: views.py:27 views.py:43 views.py:68 views.py:72 views.py:94
+#: wikijs/views.py:26 wikijs/views.py:42 wikijs/views.py:67 wikijs/views.py:71
+#: wikijs/views.py:93
 msgid "An error occurred while processing your Wiki.JS account."
 msgstr ""
 
-#: views.py:40
+#: wikijs/views.py:39
 msgid "Activated Wiki.JS"
 msgstr ""
 
-#: views.py:65 views.py:91
+#: wikijs/views.py:64 wikijs/views.py:90
 msgid "Set Wiki.JS password."
 msgstr ""
