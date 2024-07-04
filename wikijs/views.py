@@ -1,7 +1,5 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import (
-    login_required, permission_required, user_passes_test,
-)
+from django.contrib.auth.decorators import login_required, permission_required
 from django.shortcuts import redirect, render
 from django.utils.crypto import get_random_string
 from django.utils.translation import gettext_lazy as _
@@ -14,6 +12,7 @@ from .manager import WikiJSManager
 logger = get_extension_logger(__name__)
 
 ACCESS_PERM = 'wikijs.access_wikijs'
+
 
 @login_required
 @permission_required(ACCESS_PERM)
@@ -43,8 +42,8 @@ def activate_wikijs(request):
         messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
         return redirect("services:services")
 
-    return render(request, 'services/service_credentials.html',
-                context={'credentials': {"password":credentials}, 'service': 'Wiki.JS'})
+    return render(request, 'services/service_credentials.html', context={'credentials': {"password":credentials}, 'service': 'Wiki.JS'})
+
 
 @login_required
 @permission_required(ACCESS_PERM)
@@ -67,7 +66,7 @@ def set_password(request):
                     logger.error("Failed to install custom Wiki.JS password for user %s" % request.user)
                     messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
                     return redirect("services:services")
-            except Exception as e:
+            except Exception:
                 logger.error("Failed to install custom Wiki.JS password for user %s" % request.user, exc_info=1)
                 messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
             return redirect("services:services")
@@ -94,5 +93,4 @@ def reset_password(request):
         messages.error(request, _('An error occurred while processing your Wiki.JS account.'))
         return redirect("services:services")
 
-    return render(request, 'services/service_credentials.html',
-                context={'credentials': {"password":password}, 'service': 'Wiki.JS'})
+    return render(request, 'services/service_credentials.html', context={'credentials': {"password":password}, 'service': 'Wiki.JS'})

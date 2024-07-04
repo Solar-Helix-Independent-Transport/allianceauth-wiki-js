@@ -18,15 +18,16 @@ class Wikijs(commands.Cog):
     WikiJS relevant cogs for AADiscordbot
     Currently only implements minimal search
     """
+
     def __init__(self, bot):
         self.bot = bot
 
     wikijs_commands = SlashCommandGroup("wiki", "Wiki JS", guild_ids=[
-                                int(settings.DISCORD_GUILD_ID)])
+        int(settings.DISCORD_GUILD_ID)])
 
     @wikijs_commands.command(name="search", description="Search WikiJS", guild_ids=[int(settings.DISCORD_GUILD_ID)])
     @sender_has_perm('wikijs.access_wikijs')
-    async def search(self, ctx, search_string: str ):
+    async def search(self, ctx, search_string: str):
         """
         Returns the top Wiki Article search result for a string
         """
@@ -34,7 +35,7 @@ class Wikijs(commands.Cog):
         try:
             pagesearchresponse = WikiJSManager().search_for_page(search_string)
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
 
         embed = Embed(title=f"WikiJS Search: {search_string}")
 

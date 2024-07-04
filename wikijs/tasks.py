@@ -1,19 +1,17 @@
 import logging
 
-import requests
 from celery import shared_task
 
-from django.conf import settings
 from django.contrib.auth.models import User
 from django.core.exceptions import ObjectDoesNotExist
 
-from allianceauth.notifications import notify
 from allianceauth.services.tasks import QueueOnce
 
 from .manager import WikiJSManager
 from .models import WikiJs
 
 logger = logging.getLogger(__name__)
+
 
 class WikiJSTasks:
     @staticmethod

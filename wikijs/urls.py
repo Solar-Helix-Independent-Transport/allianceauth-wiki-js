@@ -1,17 +1,17 @@
-from django.urls import include, re_path
+from django.urls import include, path
 
 from . import views
 
 app_name = 'wikijs'
 
 module_urls = [
-    re_path(r'^activate/$', views.activate_wikijs, name='activate'),
-    re_path(r'^deactivate/$', views.deactivate_wikijs, name='deactivate'),
-    re_path(r'^reset_password/$', views.reset_password, name='reset_password'),
-    re_path(r'^set_password/$', views.set_password, name='set_password'),
+    path('activate/', views.activate_wikijs, name='activate'),
+    path('deactivate/', views.deactivate_wikijs, name='deactivate'),
+    path('reset_password/', views.reset_password, name='reset_password'),
+    path('set_password/', views.set_password, name='set_password'),
 
 ]
 
 urlpatterns = [
-    re_path(r'^wikijs/', include((module_urls, app_name), namespace=app_name))
+    path('wikijs/', include((module_urls, app_name), namespace=app_name))
 ]

@@ -2,7 +2,6 @@ import json
 import re
 from hashlib import md5
 
-import requests
 from graphqlclient import GraphQLClient
 
 from django.conf import settings
@@ -18,15 +17,16 @@ from .queries import (
     _activate_user_mutation, _create_group_mutation, _create_user_mutation,
     _deactivate_user_mutation, _find_pages_query, _find_user_query,
     _get_group_list_query, _update_user_mutation, _user_password_mutation,
-    _user_single_query,
 )
 
 logger = get_extension_logger(__name__)
 
 GROUP_CACHE_MAX_AGE = getattr(settings, 'WIKIJS_GROUP_CACHE_MAX_AGE', 2 * 60 * 60)  # default 2 hours
 
+
 class WikiJSManager:
     _client = None
+
     def __init__(self):
         try:
             self.client
@@ -40,22 +40,22 @@ class WikiJSManager:
             self._client.inject_token(f"Bearer {settings.WIKIJS_API_KEY}")
         return self._client
 
-    ### Groups! ****************************************************************************************************
+    # Groups! ****************************************************************************************************
 
     def _get_groups(self):
-        data = json.loads(self.client.execute(_get_group_list_query)).get("data",{}).get("groups",{}).get("list",[])
+        data = json.loads(self.client.execute(_get_group_list_query)).get("data", {}).get("groups", {}).get("list", [])
         return data
 
     def _create_group(self, name):
-        data = json.loads(self.client.execute(_create_group_mutation, variables={"group_name":name}))
+        data = json.loads(self.client.execute(_create_group_mutation, variables={"group_name": name}))
         try:
             if not data["data"]["groups"]["create"]["responseResult"]['succeeded']:
-                logger.error("WikiJs unable to create group. {}".format(data["data"]["groups"]["create"]["responseResult"]["message"]))
+                logger.error("WikiJs unable to create group. {}".format(
+                    data["data"]["groups"]["create"]["responseResult"]["message"]))
                 return None
-        except:
+        except Exception:
             logger.error(f"API returned invalid response when creating group {data}", exc_info=1)
-        return data.get("data",{}).get("groups").get("create").get("group")
-
+        return data.get("data", {}).get("groups").get("create").get("group")
 
     def __group_name_to_id(self, name):
         name = WikiJSManager._sanitize_groupname(name)
@@ -88,17 +88,17 @@ class WikiJSManager:
             group_list.append(self.__group_name_to_id(name))
         return group_list
 
-    ### Pages ********************************
+    # Pages ********************************
 
     def __find_pages(self, search_string, locale):
         logger.debug(f"Hitting API looking for page {search_string}")
-        data = json.loads(self.client.execute(_find_pages_query, variables={"search_str":search_string, "locale": locale}))
+        data = json.loads(self.client.execute(_find_pages_query, variables={"search_str": search_string, "locale": locale}))
         return data
 
-    ### Users *****************************************************************************************************
+    # Users *****************************************************************************************************
     def __find_user(self, email):
         logger.debug(f"Hitting API looking for: {email[:10]}")
-        data = json.loads(self.client.execute(_find_user_query, variables={"char_email":email.lower()}))
+        data = json.loads(self.client.execute(_find_user_query, variables={"char_email": email.lower()}))
         logger.debug(f"API returned: {data}")
         users = data.get("data", {}).get("users", {}).get("search", [])
         if users is None:
@@ -121,12 +121,13 @@ class WikiJSManager:
             groups.append(WikiJSManager._sanitize_groupname(str(g)))
 
         group_list = self.__generate_group_list(groups)
-        data = json.loads(self.client.execute(_create_user_mutation,
-                            variables={
-                                "group_list":group_list,
-                                "email":user.email.lower(),
-                                "name":name,
-                                "pass":password}))
+        data = json.loads(self.client.execute(
+            _create_user_mutation,
+            variables={
+                "group_list": group_list,
+                "email": user.email.lower(),
+                "name": name,
+                "pass": password}))
         logger.debug(f"API returned: {data}")
         if data["data"]["users"]["create"]["responseResult"]["succeeded"]:
             uid = self.__find_user(user.email.lower())
@@ -138,7 +139,7 @@ class WikiJSManager:
         return False
 
     def __deactivate_user(self, uid):
-        data = json.loads(self.client.execute(_deactivate_user_mutation, variables={"uid":uid}))
+        data = json.loads(self.client.execute(_deactivate_user_mutation, variables={"uid": uid}))
         result = data["data"]["users"]["deactivate"]["responseResult"]["succeeded"]
         if not result:
             logger.error("WikiJs unable to deactivate User. {}".format(data["data"]["users"]["deactivate"]["responseResult"]["message"]))
@@ -147,18 +148,19 @@ class WikiJSManager:
         return result
 
     def __activate_user(self, uid):
-        data = json.loads(self.client.execute(_activate_user_mutation, variables={"uid":uid}))
+        data = json.loads(self.client.execute(_activate_user_mutation, variables={"uid": uid}))
         result = data["data"]["users"]["activate"]["responseResult"]["succeeded"]
         if not result:
             logger.error("WikiJs unable to activate User. {}".format(data["data"]["users"]["activate"]["responseResult"]["message"]))
         return result
 
     def _update_password(self, uid, password):
-        data = json.loads(self.client.execute(_user_password_mutation,
-                            variables={
-                                "uid":uid,
-                                "password":password
-                                }))
+        data = json.loads(self.client.execute(
+            _user_password_mutation,
+            variables={
+                "uid": uid,
+                "password": password
+            }))
         try:
             result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
             if not result:
@@ -177,23 +179,25 @@ class WikiJSManager:
         group_list = self.__generate_group_list(groups)
         name = NameFormatter(WikiJSService(), user).format_name()
 
-        data = json.loads(self.client.execute(_update_user_mutation,
-                            variables={
-                                "uid":user.wikijs.uid,
-                                "name":name,
-                                "group_list":group_list
-                                }))
+        data = json.loads(self.client.execute(
+            _update_user_mutation,
+            variables={
+                "uid": user.wikijs.uid,
+                "name": name,
+                "group_list": group_list
+            }))
         try:
             result = data["data"]["users"]["update"]["responseResult"]["succeeded"]
             if not result:
-                logger.error("WikiJs unable to update User. {}".format(data["data"]["users"]["update"]["responseResult"]["message"]))
+                logger.error("WikiJs unable to update User. {}".format(
+                    data["data"]["users"]["update"]["responseResult"]["message"]))
             return result
         except TypeError:
             logger.error(f"WikiJs unable to update User. {user.wikijs.uid}")
             return False
 
+    # Statics ******************************************************************************************************
 
-    #Statics ******************************************************************************************************
     @staticmethod
     def _generate_cache_group_name_key(name):
         return 'WIKIJS_GROUP_NAME__%s' % md5(name.encode('utf-8')).hexdigest()
@@ -228,16 +232,15 @@ class WikiJSManager:
         else:
             return True
 
-    ### Methods **************************************************************************************************
+    # Methods **************************************************************************************************
     def update_user(self, user):
         return self._update_user(user)
 
-
     def activate_user(self, user):
-        #search
+        # search
         try:
             uid = self.__find_user(user.email.lower())
-            #create
+            # create
             if not uid:
                 logger.info(f"Creating new user for {user.username}")
                 uid = self.__create_user(user)
@@ -247,27 +250,27 @@ class WikiJSManager:
                 WikiJs.objects.update_or_create(user=user, uid=uid)
                 self.update_user(user)
 
-            #password
+            # password
             password = get_random_string(15)
             self._update_password(uid, password)
 
-            #return
+            # return
             return password
         except Exception as e:
-            logger.error(e,exc_info=1)
+            logger.error(e, exc_info=1)
             return False
 
     def deactivate_user(self, user):
 
         try:
             result = self.__deactivate_user(user.wikijs.uid)
-        except AttributeError: #no wikijs model
+        except AttributeError:  # no wikijs model
             return True
 
         if result:
             try:
                 user.wikijs.delete()
-            except:
+            except Exception:
                 pass
         return result
 
@@ -278,6 +281,6 @@ class WikiJSManager:
         try:
             result = self.__find_pages(search_string, locale)
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
 
         return result

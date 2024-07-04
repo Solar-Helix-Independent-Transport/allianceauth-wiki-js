@@ -1,4 +1,4 @@
-from django.conf.urls import url
+from django.urls import path
 
 import allianceauth.urls
 
@@ -8,7 +8,7 @@ urlpatterns = allianceauth.urls.urlpatterns
 
 urlpatterns += [
     # Navhelper test urls
-    url(r'^main-page/$', views.page, name='p1'),
-    url(r'^main-page/sub-section/$', views.page, name='p1-s1'),
-    url(r'^second-page/$', views.page, name='p1'),
+    path('main-page/', views.page, name='p1'),
+    path('main-page/sub-section/', views.page, name='p1-s1'),
+    path('second-page/', views.page, name='p1'),
 ]

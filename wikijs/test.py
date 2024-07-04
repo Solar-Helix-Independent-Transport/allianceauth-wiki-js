@@ -26,10 +26,10 @@ class WikiJSHooksTestCase(TestCase):
         member = AuthUtils.create_member(self.member)
         WikiJs.objects.create(user=member, uid=3)
         self.none_user = 'none_user'
-        none_user = AuthUtils.create_user(self.none_user)
+        self.none_user = AuthUtils.create_user(self.none_user)
         self.service = WikiJSService
         self.del_user = 'del_user'
-        del_user = AuthUtils.create_user(self.del_user)
+        self.del_user = AuthUtils.create_user(self.del_user)
         add_permissions()
 
     def test_has_account(self):
@@ -47,8 +47,8 @@ class WikiJSHooksTestCase(TestCase):
         self.assertTrue(service.service_active_for_user(member))
         self.assertFalse(service.service_active_for_user(none_user))
 
-    def test_delete_user_with_no_wiki(self):  #this deosnt fail properly on sqlite investigate more tests on mysql/psql
-        none_user = User.objects.get(username=self.del_user).delete()
+    def test_delete_user_with_no_wiki(self):  # this doesn't fail properly on sqlite investigate more tests on mysql/psql
+        User.objects.get(username=self.del_user).delete()
 
     @mock.patch(MODULE_PATH + '.manager.WikiJSManager._update_user')
     def test_update_user(self, disable):
@@ -90,7 +90,7 @@ class WikiJSHooksTestCase(TestCase):
         WikiJs.objects.create(user=none_user, uid=4)
         service.validate_user(none_user)
         with self.assertRaises(ObjectDoesNotExist):
-            none_wikijs = User.objects.get(username=self.none_user).wikijs
+            User.objects.get(username=self.none_user).wikijs
 
     @mock.patch(MODULE_PATH + '.manager.WikiJSManager.client')
     def test_delete_user(self, disable):
@@ -101,7 +101,7 @@ class WikiJSHooksTestCase(TestCase):
 
         self.assertTrue(result)
         with self.assertRaises(ObjectDoesNotExist):
-            wikijs_user = User.objects.get(username=self.member).wikijs
+            User.objects.get(username=self.member).wikijs
 
     def test_render_services_ctrl(self):
         service = self.service()

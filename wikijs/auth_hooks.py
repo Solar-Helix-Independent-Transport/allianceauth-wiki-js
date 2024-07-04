@@ -3,7 +3,6 @@ import logging
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.template.loader import render_to_string
-from django.utils.crypto import get_random_string
 
 from allianceauth import hooks
 from allianceauth.services.hooks import ServicesHook
