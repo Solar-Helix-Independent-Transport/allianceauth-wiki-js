@@ -26,4 +26,5 @@ deploy:
 	twine upload dist/*
 
 package:
-	python -m build
+	pip install flit
+	flit build
