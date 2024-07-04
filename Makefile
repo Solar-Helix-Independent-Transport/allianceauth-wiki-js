@@ -26,4 +26,4 @@ deploy:
 	twine upload dist/*
 
 package:
-	python build
+	python -m build
