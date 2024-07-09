@@ -1,69 +1,56 @@
 # Cog used by https://github.com/pvyParts/allianceauth-discordbot
+import logging
 
-# Cog Stuff
-from discord.ext import commands
-from discord.embeds import Embed
-from discord.colour import Color
-
-# AA Contexts
 from aadiscordbot.cogs.utils.decorators import sender_has_perm
-from wikijs.manager import WikiJSManager
+from discord.commands import SlashCommandGroup
+from discord.embeds import Embed
+from discord.ext import commands
+
 from django.conf import settings
 
-import re
+from wikijs.manager import WikiJSManager
 
-import logging
 logger = logging.getLogger('aadiscordbot.cogs.wikijs')
 
 
 class Wikijs(commands.Cog):
     """
     WikiJS relevant cogs for AADiscordbot
-    Currently onlt implements minimal search
+    Currently only implements minimal search
     """
+
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=True)
+    wikijs_commands = SlashCommandGroup("wiki", "Wiki JS", guild_ids=[
+        int(settings.DISCORD_GUILD_ID)])
+
+    @wikijs_commands.command(name="search", description="Search WikiJS", guild_ids=[int(settings.DISCORD_GUILD_ID)])
     @sender_has_perm('wikijs.access_wikijs')
-    async def wiki(self, ctx):
+    async def search(self, ctx, search_string: str):
         """
         Returns the top Wiki Article search result for a string
         """
-        logger.debug("WikiJS Cog: !wikijs received")
-        await ctx.channel.trigger_typing()
-        await ctx.message.add_reaction(chr(0x231B))
-
-        search_string = ctx.message.content[6:]
-        if search_string == "":
-            embed = Embed(title="WikiJS")
-            embed.colour = Color.blue()
-            embed.add_field(
-                name="Wiki Link",
-                value=f"{settings.WIKIJS_URL}"
-            )
-            await ctx.message.clear_reaction(chr(0x231B))
-            return await ctx.reply(embed=embed, mention_author=False)
-
+        await ctx.respond(content=f"Searching for {search_string}", ephemeral=True)
         try:
             pagesearchresponse = WikiJSManager().search_for_page(search_string)
-            logger.debug(f"WikiJS Cog: page search response {pagesearchresponse}")
         except Exception as e:
-            logger.error(e)
+            logger.exception(e)
 
         embed = Embed(title=f"WikiJS Search: {search_string}")
 
         for result in pagesearchresponse["data"]["pages"]["search"]["results"]:
-            logger.debug(f"WikiJS Cog: single page {result}")
             title = result["title"]
             path = result["path"]
             embed.add_field(
                 name=title,
                 value=f"{settings.WIKIJS_URL}{path}"
             )
+        return await ctx.respond(embed=embed)
 
-        await ctx.message.clear_reaction(chr(0x231B))
-        return await ctx.reply(embed=embed, mention_author=False)
+    @wikijs_commands.command(name="link", description="Link to the Wiki", guild_ids=[int(settings.DISCORD_GUILD_ID)])
+    async def link(self, ctx):
+        await ctx.respond(f"{settings.WIKIJS_URL}")
 
 
 def setup(bot):
