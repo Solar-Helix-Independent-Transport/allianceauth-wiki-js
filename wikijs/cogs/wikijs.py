@@ -37,6 +37,8 @@ class Wikijs(commands.Cog):
         except Exception as e:
             logger.exception(e)
 
+        logger.info(pagesearchresponse)
+
         embed = Embed(title=f"WikiJS Search: {search_string}")
 
         for result in pagesearchresponse["data"]["pages"]["search"]["results"]:
