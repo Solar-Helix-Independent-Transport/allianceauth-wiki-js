@@ -1,6 +1,7 @@
 # Cog used by https://github.com/pvyParts/allianceauth-discordbot
 import logging
 
+from aadiscordbot.app_settings import get_all_servers
 from aadiscordbot.cogs.utils.decorators import sender_has_perm
 from discord.commands import SlashCommandGroup
 from discord.embeds import Embed
@@ -22,10 +23,12 @@ class Wikijs(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    wikijs_commands = SlashCommandGroup("wiki", "Wiki JS", guild_ids=[
-        int(settings.DISCORD_GUILD_ID)])
+    wikijs_commands = SlashCommandGroup(
+        "wiki",
+        "Wiki JS",
+        guild_ids=get_all_servers())
 
-    @wikijs_commands.command(name="search", description="Search WikiJS", guild_ids=[int(settings.DISCORD_GUILD_ID)])
+    @wikijs_commands.command(name="search", description="Search WikiJS")
     @sender_has_perm('wikijs.access_wikijs')
     async def search(self, ctx, search_string: str):
         """
@@ -36,8 +39,6 @@ class Wikijs(commands.Cog):
             pagesearchresponse = WikiJSManager().search_for_page(search_string)
         except Exception as e:
             logger.exception(e)
-
-        logger.info(pagesearchresponse)
 
         embed = Embed(title=f"WikiJS Search: {search_string}")
 
@@ -50,7 +51,7 @@ class Wikijs(commands.Cog):
             )
         return await ctx.respond(embed=embed)
 
-    @wikijs_commands.command(name="link", description="Link to the Wiki", guild_ids=[int(settings.DISCORD_GUILD_ID)])
+    @wikijs_commands.command(name="link", description="Link to the Wiki")
     async def link(self, ctx):
         await ctx.respond(f"{settings.WIKIJS_URL}")
 
