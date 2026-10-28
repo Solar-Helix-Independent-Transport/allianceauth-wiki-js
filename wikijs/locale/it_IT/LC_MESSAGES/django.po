@@ -1,0 +1,40 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# 
+# Translators:
+# mrCabez, 2026
+# 
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-07-04 15:41+1000\n"
+"PO-Revision-Date: 2023-10-08 12:02+0000\n"
+"Last-Translator: mrCabez, 2026\n"
+"Language-Team: Italian (Italy) (https://app.transifex.com/alliance-auth/teams/107430/it_IT/)\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: it_IT\n"
+"Plural-Forms: nplurals=3; plural=n == 1 ? 0 : n != 0 && n % 1000000 == 0 ? 1 : 2;\n"
+
+#: wikijs/views.py:23
+msgid "Deactivated Wiki.JS"
+msgstr "Wiki.JS disattivato"
+
+#: wikijs/views.py:26 wikijs/views.py:42 wikijs/views.py:67 wikijs/views.py:71
+#: wikijs/views.py:93
+msgid "An error occurred while processing your Wiki.JS account."
+msgstr ""
+"Si è verificato un errore durante l'elaborazione del tuo account Wiki.JS."
+
+#: wikijs/views.py:39
+msgid "Activated Wiki.JS"
+msgstr "Wiki.JS attivato"
+
+#: wikijs/views.py:64 wikijs/views.py:90
+msgid "Set Wiki.JS password."
+msgstr "Imposta password Wiki.JS."
